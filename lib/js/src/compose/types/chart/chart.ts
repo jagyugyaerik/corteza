@@ -5,6 +5,7 @@ import {
   TemporalDataPoint,
 } from './util'
 import { getColorschemeColors } from '../../../shared'
+import { formatValue } from './util'
 
 /**
  * Chart represents a generic chart, such as a bar chart, line chart, ...
@@ -188,11 +189,19 @@ export default class Chart extends BaseChart {
           center: ['50%', '55%'],
           tooltip: {
             trigger: 'item',
-            formatter: tooltipFormatter,
+            formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
+              const { seriesName, name, value, percent } = params
+              return t?.formatting 
+                ? t.formatting
+                : `${seriesName}<br />${name} : ${formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })}${relative ? ` (${percent}%)` : ''}`
+            },
           },
           label: {
             ...lbl,
-            formatter: labelFormatter,
+            formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
+              const { seriesName, name, value, percent } = params
+              return formatValue(value, { format: '0.0000', suffix: 'A', prefix: 'B' })
+            },
           },
           itemStyle: {
             borderRadius: 5,

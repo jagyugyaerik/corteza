@@ -5,6 +5,7 @@ import {
   ChartType,
 } from './util'
 import { getColorschemeColors } from '../../../shared'
+import { formatValue } from './util'
 
 export default class RadarChart extends BaseChart {
   mtrCheck ({ field, aggregate }: Metric) {
@@ -81,6 +82,7 @@ export default class RadarChart extends BaseChart {
         show: true,
         position: 'top',
         appendToBody: true,
+        valueFormatter: (value: string | number) => formatValue(value),
       },
       radar: {
         shape: dimension.shape,
@@ -93,7 +95,7 @@ export default class RadarChart extends BaseChart {
         type: 'radar',
         label: {
           show: dimension.fixTooltips,
-          formatter: labelFormatter,
+          formatter: (value: string | number) => formatValue(value),
         },
         data: seriesData,
       },

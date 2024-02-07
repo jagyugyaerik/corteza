@@ -1,3 +1,6 @@
+import numeral from 'numeral'
+import * as fmt from '../../../formatting'
+
 export const rgbaRegex = /^rgba\((\d+),.*?(\d+),.*?(\d+),.*?(\d*\.?\d*)\)$/
 
 const ln = (n: number) => Math.round(n < 0 ? 255 + n : (n > 255) ? n - 255 : n)
@@ -240,6 +243,37 @@ export const hasRelativeDisplay = ({ type }: KV) => isRadialChart({ type })
 
 // Makes a standarised alias from modifier or dimension report option
 export const makeAlias = ({ alias, aggregate, modifier, field }: Metric) => alias || `${aggregate || modifier || 'none'}_${field}`.toLocaleLowerCase()
+
+interface FormatConfig {
+  format?: string,
+  prefix?: string,
+  suffix?: string
+}
+
+export function formatValue (value: string | number, formatConfig?: FormatConfig): string  {
+  let n: number
+
+  switch (typeof value) {
+    case 'string':
+      n = parseFloat(value)
+      break
+    case 'number':
+      n = value
+      break
+    default:
+      n = 0
+  }
+
+  let out = `${n}`
+
+  if (formatConfig?.format) {
+    out = numeral(n).format(formatConfig.format)
+  } else {
+    out = fmt.number(n)
+  }
+
+  return '' + (formatConfig?.prefix || '') + out + (formatConfig?.suffix || '')
+}
 
 const chartUtil = {
   dimensionFunctions,
