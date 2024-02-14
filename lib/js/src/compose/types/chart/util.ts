@@ -272,7 +272,7 @@ export function formatValue (value: string | number, formatConfig?: FormatConfig
     out = fmt.number(n)
   }
 
-  return '' + (formatConfig?.prefix || '') + out + (formatConfig?.suffix || '')
+  return ` ${formatConfig?.prefix || ''} ${out} ${formatConfig?.suffix || ''}`
 }
 
 const chartUtil = {
