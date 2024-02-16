@@ -4,6 +4,7 @@ import {
   Metric,
   Report,
   ChartType,
+  formatValue,
 } from './util'
 import { getColorschemeColors } from '../../../shared'
 
@@ -92,9 +93,6 @@ export default class FunnelChart extends BaseChart {
     const { legend: l } = reports[0] || {}
     const colors = getColorschemeColors(colorScheme, data.customColorSchemes)
 
-    const tooltipFormatter = `{b}<br />{c} ${tooltip.relative ? ' ({d}%)' : ''}`
-    const labelFormatter = `{c}${tooltip.relative ? ' ({d}%)' : ''}`
-
     return {
       animation: !noAnimation,
       textStyle: {
@@ -114,7 +112,10 @@ export default class FunnelChart extends BaseChart {
       tooltip: {
         show: true,
         trigger: 'item',
-        formatter: tooltipFormatter,
+        formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
+          const { name = '', value = '' || 0, percent = '' || 0 } = params
+          return `${name}<br />${formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })} ${tooltip.relative ? ` (${percent}%)` : ''}`
+        },
         appendToBody: true,
       },
       legend: {
@@ -147,7 +148,10 @@ export default class FunnelChart extends BaseChart {
             position: 'inside',
             align: 'center',
             verticalAlign: 'middle',
-            formatter: labelFormatter,
+            formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
+              const { value = '' || 0, percent = '' || 0 } = params
+              return `${formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })}${tooltip.relative ? ` (${percent}%)` : ''}`
+            },
           },
           emphasis: {
             label: {
