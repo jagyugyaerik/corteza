@@ -82,7 +82,11 @@ export default class RadarChart extends BaseChart {
         show: true,
         position: 'top',
         appendToBody: true,
-        valueFormatter: (value: string | number) => formatValue(value),
+        // dot before value not shown :(
+        formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
+          const { value = '' || 0 } = params
+          return formatValue(value, { format: '0.0000', suffix: 'A', prefix: 'B' })
+        },
       },
       radar: {
         shape: dimension.shape,
@@ -95,7 +99,10 @@ export default class RadarChart extends BaseChart {
         type: 'radar',
         label: {
           show: dimension.fixTooltips,
-          formatter: (value: string | number) => formatValue(value),
+          formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
+            const { value = '' || 0 } = params
+            return formatValue(value, { format: '0.0000', suffix: 'A', prefix: 'B' })
+          },
         },
         data: seriesData,
       },

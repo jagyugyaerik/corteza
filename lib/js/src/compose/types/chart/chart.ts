@@ -143,9 +143,6 @@ export default class Chart extends BaseChart {
     options.series = datasets.map(({ type, label, data, stack, tooltip, fill, smooth, step, roseType, symbol }: any, index: number) => {
       const { fixed, relative } = tooltip
 
-      const tooltipFormatter = t?.formatting ? t.formatting : `{a}<br />{b} : {c}${relative ? ' ({d}%)' : ''}`
-      const labelFormatter = `{@[1]}${relative ? ' ({d}%)' : ''}`
-
       // We should render the first metric in the dataset as the last
       const z = (datasets.length - 1) - index
 
@@ -190,7 +187,7 @@ export default class Chart extends BaseChart {
           tooltip: {
             trigger: 'item',
             formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
-              const { seriesName, name, value, percent } = params
+              const { seriesName = '', name = '', value = '' || 0, percent = '' || 0 } = params
               return t?.formatting 
                 ? t.formatting
                 : `${seriesName}<br />${name} : ${formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })}${relative ? ` (${percent}%)` : ''}`
@@ -199,7 +196,7 @@ export default class Chart extends BaseChart {
           label: {
             ...lbl,
             formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
-              const { seriesName, name, value, percent } = params
+              const { value = '' || 0 } = params
               return formatValue(value, { format: '0.0000', suffix: 'A', prefix: 'B' })
             },
           },
@@ -265,14 +262,29 @@ export default class Chart extends BaseChart {
           symbolSize: type === 'scatter' ? 16 : 10,
           tooltip: {
             trigger: 'axis',
-            formatter: tooltipFormatter,
+            // doesn't work
+            // formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
+            //   const { seriesName, name, value, percent } = params
+            //   return t?.formatting 
+            //     ? t.formatting
+            //     : `${seriesName}<br />${name} : ${formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })}${relative ? ` (${percent}%)` : ''}`
+            // },
           },
           label: {
             show: fixed,
             position: 'inside',
             align: 'center',
             verticalAlign: 'middle',
-            formatter: labelFormatter,
+            tooltip: {
+              trigger: 'axis',
+              // formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
+              //   const { seriesName, name, value, percent } = params
+              //   return t?.formatting 
+              //     ? t.formatting
+              //     : `${seriesName}<br />${name} : ${formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })}${relative ? ` (${percent}%)` : ''}`
+              // },
+            },
+            // formatter: {@[1]}${relative ? ' ({d}%)' : ''},
           },
           data,
         }
