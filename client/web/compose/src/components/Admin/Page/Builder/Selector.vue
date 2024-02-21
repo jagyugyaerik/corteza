@@ -33,30 +33,32 @@
       </b-col>
 
       <hr
-        v-if="existingBlocks.length"
+        v-if="existingLayoutBlocks.length || selectableNamespaceGlobalBlocks"
         class="w-100"
       >
 
+
       <b-col
-        v-if="existingBlocks.length"
+        v-if="selectableNamespaceGlobalBlocks.length"
         cols="12"
       >
         <b-input-group class="d-flex w-100">
           <c-input-select
-            v-model="selectedExistingBlock"
+            v-model="selectedGlobalBlock"
             :get-option-label="getBlockLabel"
-            :get-option-key="b => b.blockID"
-            :options="existingBlocks"
-            :placeholder="$t('selector.selectableBlocks.placeholder')"
+            :get-option-key="getOptionKey"
+            :options="selectableNamespaceGlobalBlocks"
+            :reduce="b => b.blockID"
+            placeholder="Select global block from other pages"
           />
 
           <b-input-group-append>
             <b-button
               v-b-tooltip.noninteractive.hover="{ title: $t('selector.tooltip.clone.noRef'), container: '#body' }"
               variant="extra-light"
-              :disabled="!selectedExistingBlock"
+              :disabled="!selectedGlobalBlock"
               class="d-flex align-items-center"
-              @click="$emit('select', selectedExistingBlock.clone())"
+              @click="$emit('select', fetchBlockData(selectedGlobalBlock).clone())"
             >
               <font-awesome-icon
                 :icon="['far', 'clone']"
@@ -66,9 +68,52 @@
             <b-button
               v-b-tooltip.noninteractive.hover="{ title: $t('selector.tooltip.clone.ref'), container: '#body' }"
               variant="extra-light"
-              :disabled="!selectedExistingBlock"
+              :disabled="!selectedGlobalBlock"
               class="d-flex align-items-center"
-              @click="$emit('select', selectedExistingBlock)"
+              @click="$emit('select', fetchBlockData(selectedGlobalBlock))"
+            >
+              <font-awesome-icon
+                :icon="['far', 'copy']"
+              />
+            </b-button>
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+
+      <b-col
+        v-if="existingLayoutBlocks.length"
+        cols="12"
+        class="mt-3"
+      >
+        <b-input-group class="d-flex w-100">
+          <c-input-select
+            v-model="selectedLayoutExistingBlock"
+            :get-option-label="getBlockLabel"
+            :get-option-key="b => b.blockID"
+            :options="existingLayoutBlocks"
+            :reduce="b => b.blockID"
+            :placeholder="$t('selector.selectableBlocks.placeholder')"
+          />
+
+          <b-input-group-append>
+            <b-button
+              v-b-tooltip.noninteractive.hover="{ title: $t('selector.tooltip.clone.noRef'), container: '#body' }"
+              variant="extra-light"
+              :disabled="!selectedLayoutExistingBlock"
+              class="d-flex align-items-center"
+              @click="$emit('select', fetchBlockData(selectedLayoutExistingBlock).clone())"
+            >
+              <font-awesome-icon
+                :icon="['far', 'clone']"
+              />
+            </b-button>
+
+            <b-button
+              v-b-tooltip.noninteractive.hover="{ title: $t('selector.tooltip.clone.ref'), container: '#body' }"
+              variant="extra-light"
+              :disabled="!selectedLayoutExistingBlock"
+              class="d-flex align-items-center"
+              @click="$emit('select', fetchBlockData(selectedLayoutExistingBlock))"
             >
               <font-awesome-icon
                 :icon="['far', 'copy']"
@@ -101,7 +146,12 @@ export default {
       default: () => [],
     },
 
-    existingBlocks: {
+    existingLayoutBlocks: {
+      type: Array,
+      default: () => [],
+    },
+
+    selectableNamespaceGlobalBlocks: {
       type: Array,
       default: () => [],
     },
@@ -111,7 +161,8 @@ export default {
     return {
       current: undefined,
 
-      selectedExistingBlock: undefined,
+      selectedLayoutExistingBlock: undefined,
+      selectedGlobalBlock: undefined,
 
       types: [
         {
@@ -225,9 +276,22 @@ export default {
 
     setDefaultValues () {
       this.current = undefined
-      this.selectedExistingBlock = undefined
+      this.selectedLayoutExistingBlock = undefined
+      this.selectedGlobalBlock = undefined
       this.types = []
     },
+
+    getOptionKey ({ blockID }) {
+      return blockID
+    },
+
+    fetchBlockData (blockID) {
+      if (blockID.includes('-')) {
+        return this.selectableNamespaceGlobalBlocks.find((b) => b.blockID === blockID)
+      }
+
+      return this.existingLayoutBlocks.find((b) => b.blockID === blockID)
+    }
   },
 }
 </script>

@@ -1,5 +1,6 @@
 import { Apply, CortezaID, ISO8601Date, NoID } from '../../cast'
 import { IsOf } from '../../guards'
+import { PageBlockMaker } from './page-block'
 
 interface MetaAdminRecordList {
   columns: string[];
@@ -22,6 +23,7 @@ interface Meta {
 
 interface PartialNamespace extends Partial<Omit<Namespace, 'meta' | 'createdAt' | 'updatedAt' | 'deletedAt'>> {
   meta?: Partial<Meta>;
+  blocks: Array<any>,
   createdAt?: string|number|Date;
   updatedAt?: string|number|Date;
   deletedAt?: string|number|Date;
@@ -37,6 +39,8 @@ export class Namespace {
   public labels: object = {}
 
   public meta: object = {}
+
+  public blocks: Array<any> = []
 
   public createdAt?: Date = undefined
   public updatedAt?: Date = undefined
@@ -73,6 +77,11 @@ export class Namespace {
 
     if (IsOf(n, 'labels')) {
       this.labels = { ...n.labels }
+    }
+
+    if (n.blocks) {
+      this.blocks = n.blocks ? n.blocks.filter(b => b.kind).map((b: any) => PageBlockMaker(b)) : []
+      console.log('n.blocks', this.blocks)
     }
 
     Apply(this, n, ISO8601Date, 'createdAt', 'updatedAt', 'deletedAt')

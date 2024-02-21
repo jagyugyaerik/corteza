@@ -128,6 +128,15 @@
           >
             {{ $t('general.hidden.label') }}
           </b-form-checkbox>
+          <b-form-checkbox
+            v-if="block.kind !== 'Tabs'"
+            v-model="block.meta.namespaceID"
+            :value="namespace.namespaceID"
+            switch
+            class="mb-2"
+          >
+            Make a global block
+          </b-form-checkbox>
         </b-col>
 
         <b-col
@@ -219,6 +228,11 @@ export default {
 
     page: {
       type: compose.Page,
+      required: true,
+    },
+
+    namespace: {
+      type: compose.Namespace,
       required: true,
     },
   },
