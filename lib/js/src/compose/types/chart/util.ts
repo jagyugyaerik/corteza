@@ -250,29 +250,33 @@ interface FormatConfig {
   suffix?: string
 }
 
-export function formatValue (value: string | number, formatConfig?: FormatConfig): string  {
-  let n: number
+export function formatValue (value: string | number, formatConfig?: FormatConfig): string {
+  let n: number | string
+  // if value contains alphabetic chars parseFloat() will return NaN
+  // and n will equal 0
+  const containsAlphabeticChars = isNaN(Number(value))
+  let result = ''
 
-  switch (typeof value) {
-    case 'string':
-      n = parseFloat(value)
-      break
-    case 'number':
-      n = value
-      break
-    default:
-      n = 0
+  if (!containsAlphabeticChars) {
+    switch (typeof value) {
+      case 'string':
+        n = parseFloat(value)
+        break
+      case 'number':
+        n = value
+        break
+      default:
+        n = 0
+    }
+
+    if (formatConfig?.format) {
+      result = numeral(n).format(formatConfig.format)
+    } else {
+      result = fmt.number(n)
+    }
   }
 
-  let out = `${n}`
-
-  if (formatConfig?.format) {
-    out = numeral(n).format(formatConfig.format)
-  } else {
-    out = fmt.number(n)
-  }
-
-  return ` ${formatConfig?.prefix || ''} ${out} ${formatConfig?.suffix || ''}`
+  return ` ${formatConfig?.prefix ?? ''} ${result || value} ${formatConfig?.suffix ?? ''}`
 }
 
 const chartUtil = {
