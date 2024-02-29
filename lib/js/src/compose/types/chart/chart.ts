@@ -3,9 +3,9 @@ import {
   Dimension,
   Metric,
   TemporalDataPoint,
+  formatValue,
 } from './util'
 import { getColorschemeColors } from '../../../shared'
-import { formatValue } from './util'
 
 /**
  * Chart represents a generic chart, such as a bar chart, line chart, ...
@@ -188,7 +188,7 @@ export default class Chart extends BaseChart {
             trigger: 'item',
             formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
               const { seriesName = '', name = '', value = '' || 0, percent = '' || 0 } = params
-              return t?.formatting 
+              return t?.formatting
                 ? t.formatting
                 : `${seriesName}<br />${name} : ${formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })}${relative ? ` (${percent}%)` : ''}`
             },
@@ -262,10 +262,10 @@ export default class Chart extends BaseChart {
           symbolSize: type === 'scatter' ? 16 : 10,
           tooltip: {
             trigger: 'axis',
-            // doesn't work
+            // doesn't work because triggers needs to be 'item'
             // formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
             //   const { seriesName, name, value, percent } = params
-            //   return t?.formatting 
+            //   return t?.formatting
             //     ? t.formatting
             //     : `${seriesName}<br />${name} : ${formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })}${relative ? ` (${percent}%)` : ''}`
             // },
@@ -277,14 +277,12 @@ export default class Chart extends BaseChart {
             verticalAlign: 'middle',
             tooltip: {
               trigger: 'axis',
-              // formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
-              //   const { seriesName, name, value, percent } = params
-              //   return t?.formatting 
-              //     ? t.formatting
-              //     : `${seriesName}<br />${name} : ${formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })}${relative ? ` (${percent}%)` : ''}`
-              // },
             },
-            // formatter: {@[1]}${relative ? ' ({d}%)' : ''},
+            formatter: function (params: { seriesName: string, name: string, value: Array<any>, percent: string | number }): string {
+              const { value = [], percent = '' || 0 } = params
+
+              return `${formatValue(value[1], { format: '0.0000', suffix: 'B', prefix: 'A' })}${relative ? ` (${percent}%)` : ''}`
+            },
           },
           data,
         }
