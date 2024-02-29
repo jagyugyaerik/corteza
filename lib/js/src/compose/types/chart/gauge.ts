@@ -5,6 +5,7 @@ import {
   Dimension,
   ChartType,
   TemporalDataPoint,
+  formatValue,
 } from './util'
 import { getColorschemeColors } from '../../../shared'
 
@@ -153,10 +154,13 @@ export default class GaugeChart extends BaseChart {
             offsetCenter: [0, '55%'],
             valueAnimation: true,
             color: themeVariables.black,
+            formatter: function (value: string | number) {
+              return formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })
+            },
           },
           data: [
             {
-              name,
+              name: formatValue(name, { format: '0.0000', suffix: 'B', prefix: 'A' }),
               value,
             },
           ],
