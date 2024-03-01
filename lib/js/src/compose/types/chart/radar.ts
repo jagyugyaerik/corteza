@@ -3,9 +3,9 @@ import {
   Dimension,
   Metric,
   ChartType,
+  formatValue,
 } from './util'
 import { getColorschemeColors } from '../../../shared'
-import { formatValue } from './util'
 
 export default class RadarChart extends BaseChart {
   mtrCheck ({ field, aggregate }: Metric) {
@@ -82,10 +82,8 @@ export default class RadarChart extends BaseChart {
         show: true,
         position: 'top',
         appendToBody: true,
-        // dot before value not shown :(
-        formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
-          const { value = '' || 0 } = params
-          return formatValue(value, { format: '0.0000', suffix: 'A', prefix: 'B' })
+        valueFormatter: (value: string | number): string => {
+          return formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })
         },
       },
       radar: {
@@ -99,7 +97,7 @@ export default class RadarChart extends BaseChart {
         type: 'radar',
         label: {
           show: dimension.fixTooltips,
-          formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
+          formatter: function (params: { seriesName: string, name: string, value: string | number }): string {
             const { value = '' || 0 } = params
             return formatValue(value, { format: '0.0000', suffix: 'A', prefix: 'B' })
           },
