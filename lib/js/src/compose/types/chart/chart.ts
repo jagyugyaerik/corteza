@@ -3,6 +3,7 @@ import {
   Dimension,
   Metric,
   TemporalDataPoint,
+  formatChartTooltip,
   formatChartValue,
 } from './util'
 import { getColorschemeColors } from '../../../shared'
@@ -89,7 +90,7 @@ export default class Chart extends BaseChart {
             hideOverlap: true,
             rotate: dimension.rotateLabel,
             formatter: (value: string | number): string => {
-              return formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })
+              return formatChartValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })
             },
           },
           axisTick: {
@@ -113,7 +114,7 @@ export default class Chart extends BaseChart {
             hideOverlap: true,
             rotate: yAxis.rotateLabel,
             formatter: (value: string | number): string => {
-              return formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })
+              return formatChartValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })
             },
           },
           axisLine: {
@@ -192,18 +193,18 @@ export default class Chart extends BaseChart {
           center: ['50%', '55%'],
           tooltip: {
             trigger: 'item',
-            formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
-              const { seriesName = '', name = '', value = '' || 0, percent = '' || 0 } = params
+            formatter: function (params: { seriesName: string, name: string, value: string, percent: string }): string {
+              const { seriesName = '', name = '', value = '', percent = '' } = params
               return t?.formatting
-                ? t.formatting
-                : `${seriesName}<br />${name} : ${formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })}${relative ? ` (${percent}%)` : ''}`
+                ? formatChartTooltip(t?.formatting, params)
+                : `${seriesName}<br />${name} : ${formatChartValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })}${relative ? ` (${percent}%)` : ''}`
             },
           },
           label: {
             ...lbl,
             formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
               const { value = '' || 0 } = params
-              return formatValue(value, { format: '0.0000', suffix: 'A', prefix: 'B' })
+              return formatChartValue(value, { format: '0.0000', suffix: 'A', prefix: 'B' })
             },
           },
           itemStyle: {
@@ -268,12 +269,10 @@ export default class Chart extends BaseChart {
           symbolSize: type === 'scatter' ? 16 : 10,
           tooltip: {
             trigger: 'axis',
-            // doesn't work because triggers needs to be 'item'
-            // formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
-            //   const { seriesName, name, value, percent } = params
+            // valueFormatter: (value: string | number): string => {
             //   return t?.formatting
             //     ? t.formatting
-            //     : `${seriesName}<br />${name} : ${formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })}${relative ? ` (${percent}%)` : ''}`
+            //     : `${formatChartValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })}`
             // },
           },
           label: {
@@ -287,7 +286,7 @@ export default class Chart extends BaseChart {
             formatter: function (params: { seriesName: string, name: string, value: Array<any>, percent: string | number }): string {
               const { value = [], percent = '' || 0 } = params
 
-              return `${formatValue(value[1], { format: '0.0000', suffix: 'B', prefix: 'A' })}${relative ? ` (${percent}%)` : ''}`
+              return `${formatChartValue(value[1], { format: '0.0000', suffix: 'B', prefix: 'A' })}${relative ? ` (${percent}%)` : ''}`
             },
           },
           data,

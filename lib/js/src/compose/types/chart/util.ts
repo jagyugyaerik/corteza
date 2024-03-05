@@ -250,7 +250,7 @@ interface FormatConfig {
   suffix?: string
 }
 
-export function formatValue (value: string | number, formatConfig?: FormatConfig): string {
+export function formatChartValue (value: string | number, formatConfig?: FormatConfig): string {
   let n: number | string
   // if value contains alphabetic chars parseFloat() will return NaN
   // and n will equal 0
@@ -277,6 +277,18 @@ export function formatValue (value: string | number, formatConfig?: FormatConfig
   }
 
   return ` ${formatConfig?.prefix ?? ''} ${result || value} ${formatConfig?.suffix ?? ''}`
+}
+
+export function formatChartTooltip (
+  tooltip: string,
+  params: { seriesName: string, name: string, value: string, percent: string }): string {
+  const { seriesName = '', name = '', value = '', percent = '' } = params
+
+  return tooltip
+    .replace('{a}', seriesName)
+    .replace('{b}', name)
+    .replace('{c}', value)
+    .replace('{d}', percent)
 }
 
 const chartUtil = {
