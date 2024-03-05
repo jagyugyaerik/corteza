@@ -3,7 +3,7 @@ import {
   Dimension,
   Metric,
   TemporalDataPoint,
-  formatValue,
+  formatChartValue,
 } from './util'
 import { getColorschemeColors } from '../../../shared'
 
@@ -88,6 +88,9 @@ export default class Chart extends BaseChart {
             overflow: 'break',
             hideOverlap: true,
             rotate: dimension.rotateLabel,
+            formatter: (value: string | number): string => {
+              return formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })
+            },
           },
           axisTick: {
             show: false,
@@ -109,6 +112,9 @@ export default class Chart extends BaseChart {
             overflow: 'break',
             hideOverlap: true,
             rotate: yAxis.rotateLabel,
+            formatter: (value: string | number): string => {
+              return formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })
+            },
           },
           axisLine: {
             show: false,
