@@ -4,7 +4,7 @@ import {
   Metric,
   Report,
   ChartType,
-  formatValue,
+  formatChartValue,
 } from './util'
 import { getColorschemeColors } from '../../../shared'
 
@@ -114,7 +114,7 @@ export default class FunnelChart extends BaseChart {
         trigger: 'item',
         formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
           const { name = '', value = '' || 0, percent = '' || 0 } = params
-          return `${name}<br />${formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })} ${tooltip.relative ? ` (${percent}%)` : ''}`
+          return `${name}<br />${formatChartValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })} ${tooltip.relative ? ` (${percent}%)` : ''}`
         },
         appendToBody: true,
       },
@@ -150,7 +150,7 @@ export default class FunnelChart extends BaseChart {
             verticalAlign: 'middle',
             formatter: function (params: { seriesName: string, name: string, value: string | number, percent: string | number }): string {
               const { value = '' || 0, percent = '' || 0 } = params
-              return `${formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })}${tooltip.relative ? ` (${percent}%)` : ''}`
+              return `${formatChartValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })}${tooltip.relative ? ` (${percent}%)` : ''}`
             },
           },
           emphasis: {

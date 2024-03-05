@@ -3,7 +3,7 @@ import {
   Dimension,
   Metric,
   ChartType,
-  formatValue,
+  formatChartValue,
 } from './util'
 import { getColorschemeColors } from '../../../shared'
 
@@ -83,7 +83,7 @@ export default class RadarChart extends BaseChart {
         position: 'top',
         appendToBody: true,
         valueFormatter: (value: string | number): string => {
-          return formatValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })
+          return formatChartValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })
         },
       },
       radar: {
@@ -99,7 +99,7 @@ export default class RadarChart extends BaseChart {
           show: dimension.fixTooltips,
           formatter: function (params: { seriesName: string, name: string, value: string | number }): string {
             const { value = '' || 0 } = params
-            return formatValue(value, { format: '0.0000', suffix: 'A', prefix: 'B' })
+            return formatChartValue(value, { format: '0.0000', suffix: 'A', prefix: 'B' })
           },
         },
         data: seriesData,

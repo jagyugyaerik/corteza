@@ -269,11 +269,11 @@ export default class Chart extends BaseChart {
           symbolSize: type === 'scatter' ? 16 : 10,
           tooltip: {
             trigger: 'axis',
-            // valueFormatter: (value: string | number): string => {
-            //   return t?.formatting
-            //     ? t.formatting
-            //     : `${formatChartValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })}`
-            // },
+            valueFormatter: (value: string | number): string => {
+              return t?.formatting
+                ? t.formatting
+                : `${formatChartValue(value, { format: '0.0000', suffix: 'B', prefix: 'A' })}`
+            },
           },
           label: {
             show: fixed,
