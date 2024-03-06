@@ -61,11 +61,17 @@ const definitions: Record<string, PromptDefinition> = {
     handler: function (v): void {
       const url = pVal(v, 'url')
       const delay = (pVal(v, 'delay') || 0) as number
+      const openInNewTab = pVal(v, 'openInNewTab')
       if (url !== undefined) {
         console.debug('redirect to %s via prompt in %d sec', url, delay)
         setTimeout(() => {
-          // @ts-ignore
-          window.location = url
+          if (openInNewTab) {
+            //@ts-ignore
+            window.open(url, '_blank')
+          } else {
+            // @ts-ignore
+            window.location = url
+          }
         }, delay * 1000)
       }
     },
@@ -77,11 +83,20 @@ const definitions: Record<string, PromptDefinition> = {
       const params = pVal(v, 'params')
       const query = pVal(v, 'query')
       const delay = (pVal(v, 'delay') || 0) as number
+      const openInNewTab = pVal(v, 'openInNewTab')
       if (name !== undefined) {
         console.debug('reroute to %s via prompt in %d sec', name, delay, { params, query })
         setTimeout(() => {
-          // @ts-ignore
-          this.$router.push({ name, params, query })
+          const routeParams = { name, params, query }
+          if (openInNewTab) {
+            // @ts-ignore
+            const url = this.$router.resolve(routeParams).href
+            //@ts-ignore
+            window.open(url, '_blank')
+          } else {
+            // @ts-ignore
+            this.$router.push(routeParams)
+          }
         }, delay * 1000)
       }
     },
@@ -94,6 +109,7 @@ const definitions: Record<string, PromptDefinition> = {
       const record = pVal(v, 'record')
       const edit = !!pVal(v, 'edit')
       const delay = (pVal(v, 'delay') || 0) as number
+      const openInNewTab = pVal(v, 'openInNewTab')
 
       let namespaceID = ''
       let slug = ''
@@ -179,8 +195,16 @@ const definitions: Record<string, PromptDefinition> = {
           if (reloadPage) {
             window.location.reload()
           } else {
-            // @ts-ignore
-            this.$router.push({ name, params: { recordID, pageID, slug } })
+            const routeParams = { name, params: { recordID, pageID, slug } }
+            if (openInNewTab) {
+              // @ts-ignore
+              const url = this.$router.resolve(routeParams).href
+              //@ts-ignore
+              window.open(url, '_blank')
+            } else {
+              // @ts-ignore
+              this.$router.push(routeParams)
+            }
           }
         }, delay * 1000)
       } else {

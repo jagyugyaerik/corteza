@@ -19,6 +19,7 @@ export const prompts = Object.freeze([
       { name: 'owner', types: ['User', 'ID'], required: false },
       { name: 'url', types: ['String'], required: true },
       { name: 'delay', types: ['Integer'], meta: { description: 'Redirection delay in seconds' } },
+      { name: 'openInNewTab', types: ['Boolean'] }
     ],
   },
   {
@@ -30,6 +31,7 @@ export const prompts = Object.freeze([
       { name: 'params', types: ['KV'] },
       { name: 'query', types: ['KV'] },
       { name: 'delay', types: ['Integer'], meta: { description: 'Redirection delay in seconds' } },
+      { name: 'openInNewTab', types: ['Boolean'] }
     ],
   },
   {
@@ -45,6 +47,7 @@ export const prompts = Object.freeze([
       { name: 'record', types: ['ID', 'ComposeRecord'] },
       { name: 'edit', types: ['Boolean'] },
       { name: 'delay', types: ['Integer'], meta: { description: 'Redirection delay in seconds' } },
+      { name: 'openInNewTab', types: ['Boolean'] }
     ],
   },
   {
